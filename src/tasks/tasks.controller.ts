@@ -17,7 +17,7 @@ import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private tasksService: TasksService) { }
+  constructor(private tasksService: TasksService) {}
 
   // @Get()
   // getTasks(@Query() filterDto: GetTasksFilterDto): Task[] {
@@ -33,10 +33,10 @@ export class TasksController {
     return this.tasksService.getTaskById(id);
   }
 
-  // @Post()
-  // createTask(@Body() createTaskDto: CreateTaskDto): Task {
-  //   return this.tasksService.createTask(createTaskDto);
-  // }
+  @Post()
+  createTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskEntity> {
+    return this.tasksService.createTask(createTaskDto);
+  }
 
   // @Delete('/:id')
   // deleteTask(@Param('id') id: string): void {

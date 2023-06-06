@@ -8,11 +8,10 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class TasksService {
-
   constructor(
     @InjectRepository(TaskEntity)
-    private tasksRepository: Repository<TaskEntity>
-  ){}
+    private tasksRepository: Repository<TaskEntity>,
+  ) {}
 
   // getAllTasks(): Task[] {
   //   return this.tasks;
@@ -39,28 +38,27 @@ export class TasksService {
   // }
 
   async getTaskById(id: string): Promise<TaskEntity> {
-    const found = await this.tasksRepository.findOneBy({id});
+    const found = await this.tasksRepository.findOneBy({ id });
 
-    if(!found){
+    if (!found) {
       throw new NotFoundException(`Task with ${id} ID not found`);
     }
 
     return found;
   }
 
-  // createTask(createTaskDto: CreateTaskDto): Task {
-  //   const { title, description } = createTaskDto;
+  async createTask(createTaskDto: CreateTaskDto): Promise<TaskEntity> {
+    const { title, description } = createTaskDto;
 
-  //   const task: Task = {
-  //     id: uuid(),
-  //     title,
-  //     description,
-  //     status: TaskStatus.OPEN,
-  //   };
+    const task = this.tasksRepository.create({
+      title,
+      description,
+      status: TaskStatus.OPEN,
+    });
 
-  //   this.tasks.push(task);
-  //   return task;
-  // }
+    await this.tasksRepository.save(task);
+    return task;
+  }
 
   // deleteTask(id: string): void {
   //   const found = this.getTaskById(id);
