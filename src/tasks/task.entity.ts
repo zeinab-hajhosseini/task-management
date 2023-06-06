@@ -1,8 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { TaskStatus } from "./task-status.enum";
 
-@Entity()
-export class Task{
+@Entity({
+    name: 'Tasks',
+    synchronize: true
+})
+export class TaskEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
