@@ -4,7 +4,9 @@ import { TasksService } from './tasks.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { UserEntity } from 'src/auth/user.entity';
+import { UserEntity } from '../auth/user.entity';
+import { UpdateTaskStatusDTO } from './dto/update-task-status.dto';
+import { TaskStatus } from './task-status.enum';
 
 const mocksHttp = require('node-mocks-http');
 
@@ -22,11 +24,28 @@ describe('TasksController', () => {
           id: 1,
         };
       }),
+
+    updateTaskStatus: jest
+      .fn()
+      .mockImplementation(
+        (id: string, status: TaskStatus, user: UserEntity) => {
+          return {
+            id,
+            title: 'Sample',
+            description: 'Sample',
+            status,
+          };
+        },
+      ),
   };
 
   const mockCreateTaskDto: CreateTaskDto = {
     title: 'Test Task',
     description: 'This Task must be created',
+  };
+
+  const mockUpdateTaskDto: UpdateTaskStatusDTO = {
+    status: TaskStatus.DONE,
   };
 
   const mockUser: UserEntity = {
@@ -66,5 +85,22 @@ describe('TasksController', () => {
       status: 'OPEN',
       id: expect.any(Number),
     });
+
+    expect(mockTasksService.createTask).toBeCalledWith(
+      mockCreateTaskDto,
+      mockUser,
+    );
+  });
+
+  it('Should be update Task', () => {
+    expect(
+      tasksController.updateTaskStatus('1', mockUpdateTaskDto, mockUser),
+    ).toEqual({
+      id: '1',
+      title: 'Sample',
+      description: 'Sample',
+      status: mockUpdateTaskDto.status,
+    });
+    expect(mockTasksService.updateTaskStatus).toBeCalled();
   });
 });
